@@ -2,7 +2,7 @@
 #Импорт словаря комнат
 from labyrinth_game.constants import ROOMS
 from labyrinth_game.utils import describe_current_room 
-from labyrinth_game.player_actions import get_input, show_inventory
+from labyrinth_game.player_actions import get_input, show_inventory, move_player, take_item
 
 #Создаем словарь с состоянием игры
 game_state = {
@@ -12,11 +12,51 @@ game_state = {
     'steps_taken': 0 # Количество шагов
 }
 
+def process_command(game_state, command):
+    '''
+    Обрабатывает команды, введенные игроком
+
+    Args: game_state и комманда из инпута игрока
+
+    Returns: вызов функции и выполнение действия
+    '''
+    separation = command.split()
+
+    if not separation:
+        print('Такой команды нет.')
+
+    action = separation[0]
+
+    match action:
+        case 'look':
+            describe_current_room(game_state)
+        case 'use':
+            pass
+        case 'go':
+            direction = separation[1]
+            move_player(game_state, direction)
+        case 'take':
+            item_name = separation[1]
+            take_item(game_state, item_name)
+        case 'inventory':
+            show_inventory(game_state)
+        case 'quit':
+            print('Игра окончена')
+            game_state['game_over'] = True
+        case _:
+            print('Такой команды нет.')
+        
+    return game_state['game_over']
+            
+
+
+
 def main():
     print('Добро пожаловать в Лабиринт сокровищ!\n')
     describe_current_room(game_state)
     while game_state['game_over'] == False:
-        get_input()
+        current_command = get_input()
+        process_command(game_state, current_command)
 
 if __name__ == '__main__':
     main()

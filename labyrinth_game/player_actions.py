@@ -48,6 +48,24 @@ def move_player(game_state, direction):
         print(f'Вы переместились {direction} в {new_room_name}!\n')
         describe_current_room(game_state)
     else:
-        print('Нельзя пойти в этом направлении.')
+        print(f'Такого направления нет, попробуй: {', '.join(current_room_exits)}')
 
+    return game_state
+
+def take_item(game_state, item_name):
+    """
+    Добавляет выбранный предмет в инвентарь 
+
+    Args: состояние инвентаря и вещи в комнате - все в game_state
+
+    Returns: измененный game_state, а именно инвентарь
+    """
+    items_in_the_room = ROOMS[game_state['current_room']]['items']
+    if item_name in items_in_the_room:
+        game_state['player_inventory'].append(item_name)
+        items_in_the_room.remove(item_name)
+        print(f'Вы подняли: {item_name}')  
+    else:
+        print("Такого предмета здесь нет.")
+    
     return game_state
