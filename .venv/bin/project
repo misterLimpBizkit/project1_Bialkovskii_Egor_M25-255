@@ -1,0 +1,6 @@
+#!/Users/limpbizkit/Desktop/project1_Bialkovskii_Egor_M25-255/.venv/bin/python
+import sys
+from labyrinth_game.main import main
+
+if __name__ == '__main__':
+    sys.exit(main())
