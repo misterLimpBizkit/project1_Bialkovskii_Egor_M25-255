@@ -82,7 +82,7 @@ def move_player(game_state, direction):
     if direction in list(current_room_exits):
         new_room_name = current_room_exits[direction] 
         game_state['current_room'] = new_room_name
-        game_state['steps_taken'] += 1 #= game_state.get('steps_taken', 0) + 1
+        game_state['steps_taken'] = game_state.get('steps_taken', 0) + 1 #можно += 1, т.к. steps_taken заранее инициирован
         print(f'Вы переместились {direction} в {new_room_name}!\n')
         describe_current_room(game_state)
     else:
@@ -91,5 +91,28 @@ def move_player(game_state, direction):
     return game_state
 
 
-move_player(game_state, 'north')
+#move_player(game_state, 'north')
+#print(game_state)
+
+def process_command(game_state, item_name):
+    """
+    Добавляет выбранный предмет в инвентарь 
+
+    Args: состояние инввентаря и вещи в комнате - все в game_state
+
+    Returns: изменненый game_state, а именно инвентарь
+    """
+    items_in_the_room = ROOMS[game_state['current_room']]['items']
+    if item_name in list(items_in_the_room):
+        game_state['player_inventory'].append(item_name)
+        print(f'Вы подняли: {item_name}')
+        items_in_the_room.remove(item_name)
+    else:
+        print("Такого предмета здесь нет.")
+    
+    return game_state
+
+process_command(game_state, 'torch')
 print(game_state)
+print(ROOMS)
+
