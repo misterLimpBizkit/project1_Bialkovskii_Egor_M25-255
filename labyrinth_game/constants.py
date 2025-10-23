@@ -1,4 +1,5 @@
 # labyrinth_game/constants.py
+#Словарь комнат
 ROOMS = {
     'entrance': {
         'description': 'Вы в темном входе лабиринта. Стены покрыты мхом. На полу лежит старый факел.',
