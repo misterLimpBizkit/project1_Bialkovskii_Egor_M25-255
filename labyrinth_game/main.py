@@ -27,6 +27,8 @@ def process_command(game_state, command):
 
     action = separation[0]
 
+    list_of_options = ('look', 'use', 'go', 'take', 'inventory', 'quit')
+
     match action:
         case 'look':
             describe_current_room(game_state)
@@ -44,7 +46,7 @@ def process_command(game_state, command):
             print('Игра окончена')
             game_state['game_over'] = True
         case _:
-            print('Такой команды нет.')
+            print(f'Такой команды нет. Попробуй: \n{'\n'.join(list_of_options)}')
         
     return game_state['game_over']
             
