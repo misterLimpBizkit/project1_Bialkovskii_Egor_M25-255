@@ -1,3 +1,6 @@
+from labyrinth_game.constants import ROOMS
+from labyrinth_game.utils import describe_current_room 
+
 def show_inventory(game_state):
     """
     Выводит содержимое инвенторя
@@ -27,3 +30,24 @@ def get_input(prompt="> "):
     except (KeyboardInterrupt, EOFError):
         print("\nВыход из игры.")
         return "quit"
+    
+def move_player(game_state, direction):
+    """
+    Двигает игрока по карте и меняет состояние game_state
+
+    Args: состояние игры и направление следующего шага
+
+    Returns: комната в состоянии игры обновляется, шаг увеличивается на единицу и выводится описание новой комнаты 
+    """
+    current_room_name = game_state['current_room']
+    current_room_exits = ROOMS[current_room_name]['exits']
+    if direction in list(current_room_exits):
+        new_room_name = current_room_exits[direction] 
+        game_state['current_room'] = new_room_name
+        game_state['steps_taken'] = game_state.get('steps_taken', 0) + 1 #можно += 1, т.к. steps_taken заранее инициирован
+        print(f'Вы переместились {direction} в {new_room_name}!\n')
+        describe_current_room(game_state)
+    else:
+        print('Нельзя пойти в этом направлении.')
+
+    return game_state
