@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #Импорт словаря комнат
 from labyrinth_game.constants import ROOMS
-from labyrinth_game.utils import describe_current_room 
-from labyrinth_game.player_actions import get_input, show_inventory, move_player, take_item
+from labyrinth_game.utils import describe_current_room, solve_puzzle 
+from labyrinth_game.player_actions import get_input, show_inventory, move_player, take_item, use_item
 
 #Создаем словарь с состоянием игры
 game_state = {
@@ -24,6 +24,7 @@ def process_command(game_state, command):
 
     if not separation:
         print('Такой команды нет.')
+    
 
     action = separation[0]
 
@@ -32,14 +33,23 @@ def process_command(game_state, command):
     match action:
         case 'look':
             describe_current_room(game_state)
+        case 'solve':
+            solve_puzzle(game_state)
         case 'use':
-            pass
-        case 'go':
-            direction = separation[1]
-            move_player(game_state, direction)
-        case 'take':
             item_name = separation[1]
-            take_item(game_state, item_name)
+            use_item(game_state, item_name)
+        case 'go':
+            if len(separation) < 2:
+                print('Попробуй объединить с направлением. Например, go north')
+            else:
+                direction = separation[1]
+                move_player(game_state, direction)
+        case 'take':
+            if len(separation) < 2:
+                print('Попробуй объединить с направлением. Например, go north')
+            else:
+                item_name = separation[1]
+                take_item(game_state, item_name)
         case 'inventory':
             show_inventory(game_state)
         case 'quit':

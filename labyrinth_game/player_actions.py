@@ -69,3 +69,34 @@ def take_item(game_state, item_name):
         print("Такого предмета здесь нет.")
     
     return game_state
+
+def use_item(game_state, item_name):
+    """
+    Использует предмет из инвентаря
+
+    Args: game_state и название предмета
+
+    Returns: действие, вызванное использованием предмета
+    """
+    my_items = game_state['player_inventory']
+    if item_name in my_items:
+        match item_name:
+            case 'torch':
+                print('Вы достали факел. В комнате стало заметно светлее.')
+            case 'sword':
+                print('Вы достали меч. Ваша уверенность в себе резко подскачила.')
+            case 'bronze_box':
+                print('Вы открыли шкатулку. Внутри старый, ржавый ключ.')
+                game_state['player_inventory'].append('rusty_key')
+            case 'ginger car':
+                print('Мяу')
+            case 'black kitten':
+                print('МИУ миу')
+            case 'fat ginger cat':
+                print('МЯЯЯЯУ')
+            case 'Священный алмаз':
+                print('Алмаз красиво сверкает, вам это нравится')
+            case 'treasure_room_key':
+                print('Вам это еще пригодится')
+            case _:
+                print('Непонятно как это использовать')
