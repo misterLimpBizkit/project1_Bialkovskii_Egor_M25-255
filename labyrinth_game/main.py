@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #Импорт словаря комнат
 from labyrinth_game.constants import ROOMS
-from labyrinth_game.utils import describe_current_room, solve_puzzle 
+from labyrinth_game.utils import describe_current_room, solve_puzzle, attempt_open_treasure, show_help
 from labyrinth_game.player_actions import get_input, show_inventory, move_player, take_item, use_item
 
 #Создаем словарь с состоянием игры
@@ -21,20 +21,17 @@ def process_command(game_state, command):
     Returns: вызов функции и выполнение действия
     '''
     separation = command.split()
-
-    if not separation:
-        print('Такой команды нет.')
     
-
     action = separation[0]
-
-    list_of_options = ('look', 'use', 'go', 'take', 'inventory', 'quit')
 
     match action:
         case 'look':
             describe_current_room(game_state)
         case 'solve':
-            solve_puzzle(game_state)
+            if game_state['current_room'] == 'treasure_room':
+                attempt_open_treasure(game_state)
+            else:
+                solve_puzzle(game_state)
         case 'use':
             item_name = separation[1]
             use_item(game_state, item_name)
@@ -46,7 +43,7 @@ def process_command(game_state, command):
                 move_player(game_state, direction)
         case 'take':
             if len(separation) < 2:
-                print('Попробуй объединить с направлением. Например, go north')
+                print('Попробуй объединить с направлением. Например, take torch')
             else:
                 item_name = separation[1]
                 take_item(game_state, item_name)
@@ -55,8 +52,11 @@ def process_command(game_state, command):
         case 'quit':
             print('Игра окончена')
             game_state['game_over'] = True
+        case 'help':
+            show_help()
         case _:
-            print(f'Такой команды нет. Попробуй: \n{'\n'.join(list_of_options)}')
+            print('Такой команды нет.')
+            show_help()
         
     return game_state['game_over']
             
