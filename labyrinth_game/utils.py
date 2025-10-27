@@ -1,4 +1,5 @@
 from labyrinth_game.constants import ROOMS
+import math
 
 def describe_current_room(game_state):
     """
@@ -85,6 +86,7 @@ def attempt_open_treasure(game_state):
                 print('Неправильно!')
         else:
             print('Вы отходите от сундука.')
+
     return game_state
 
 def show_help():
@@ -97,3 +99,89 @@ def show_help():
     print("  solve           - попытаться решить загадку в комнате")
     print("  quit            - выйти из игры")
     print("  help            - показать это сообщение")
+
+
+def pseudo_random(seed, modulo):
+      """
+    Генерирует псевдослучайное число в диапазоне [0, modulo) на основе синуса
+    
+    Args: seed (int): начальное значение (например, количество шагов)
+    modulo (int): верхняя граница диапазона (исключительно)
+    
+    Returns:
+    int: псевдослучайное число от 0 до modulo-1
+    """
+      seed_sinus = math.sin(seed * 12.9898)
+      multiplied = seed_sinus * 43758.5453
+      part = multiplied - math.floor(multiplied)
+      result = math.floor(part * modulo)
+
+      return result
+
+def trigger_trap(game_state):
+    """
+    Bмитирует срабатывание ловушки и должна приводить к
+    негативным последствиям для игрока
+
+    Args: game_state
+
+    Returns: изменение инвентаря и game_state
+    """
+    print('Ловушка активирована! Пол стал дрожать...')
+    player_inventory = game_state['player_inventory']
+    seed = game_state['steps_taken']
+    if player_inventory == []:
+        random_number = pseudo_random(seed, 10)
+        if random_number < 3:
+            print('Пол распался на части. Вы провалилсь в бездну!')
+            game_state['game_over'] = True
+        else:
+            print('Вы уцелели!')
+    else:
+        user_items = game_state['player_inventory']
+        random_item = pseudo_random(seed, len(user_items))
+        lost_item = user_items.pop(random_item)
+        print(f'В суматохе вы потеряли {lost_item}')
+
+
+    return game_state
+
+def random_event(game_state):
+    """
+    Рассчитывает вероятность случайного события,
+    потом случайно выбирает событие и 
+    воспроизводит его
+
+    Args: game_state
+
+    Returns: событие
+    """
+    seed = game_state['steps_taken']
+    event_probability = pseudo_random(seed, 10)
+    if event_probability == 0:
+        event_type = pseudo_random(seed + 1, 3)
+        if event_type == 0:
+            print('Вы нашли монетку!')
+            items_in_the_room = ROOMS[game_state['current_room']]['items']
+            items_in_the_room.append('coin')
+        elif event_type == 1:
+            print('Вы слышите шорох...')
+            if 'sword' in game_state['player_inventory']:
+                print('Вы отпугнули существо своим мечом.')
+            else:
+                print('Вам нечем защищаться...')
+                print('Вас съел ящер, нужен был меч для защиты.')
+            game_state['game_over'] = True
+        elif event_type == 2:
+            if game_state['current_room'] == 'trap_room' and \
+            'torch' not in game_state['player_inventory']:
+                print('Вы чувствуете опасность...')
+                trigger_trap(game_state)
+
+    return game_state
+
+        
+
+            
+
+
