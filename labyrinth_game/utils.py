@@ -31,27 +31,43 @@ def solve_puzzle(game_state):
 
     Returns: дает игроку награду и убирает загадку из комнтаы
     """
-    puzzles_in_the_room = ROOMS[game_state['current_room']]['puzzle']
-    right_answer = puzzles_in_the_room[1]
-    question = puzzles_in_the_room[0]
-    if puzzles_in_the_room:
-        print(question)
-        answer = input('Ваш ответ:').strip()
-        if answer == right_answer:
-            if right_answer == 'fat_ginger_cat':
-                if 'fat_ginger_cat' in game_state['player_inventory']:
-                    print('Правильно')
-                    print(f'Вы получаете: {puzzles_in_the_room[2]}!')
-                    ROOMS[game_state['current_room']]['puzzle'] = None
-                else:
-                    print('У вас нет толстого кота, подберите его.')
-            else:
-                print('Правильно')
-                print(f'Вы получаете: {puzzles_in_the_room[2]}!')
-                game_state['player_inventory'].append(puzzles_in_the_room[2])
-                ROOMS[game_state['current_room']]['puzzle'] = None
-        else:
-            print('Неверно. Попробуйте снова.')
+    current_room = game_state['current_room']
+    puzzles_in_the_room = ROOMS[current_room]['puzzle']
+
+    if not puzzles_in_the_room:
+        print("В этой комнате нет загадки.")
+        return game_state
+
+    question, right_answer, reward = puzzles_in_the_room
+
+    alternative_answers = {
+        '10': ['десять', 'ten'],
+        'fat_ginger_cat': ['толстый рыжий кот', 'толстый кот']
+    }
+
+    correct_answers = [right_answer] + alternative_answers.get(right_answer, [])
+
+    print(question)
+    answer = input('Ваш ответ: ').strip().lower()
+    
+    if answer not in correct_answers:
+        print('Неверно. Попробуйте снова.')
+        if current_room == 'trap_room':
+            print("Неверный ответ активировал ловушку!")
+            trigger_trap(game_state)
+        return game_state
+
+    if right_answer == 'fat_ginger_cat' and 'fat_ginger_cat' not in game_state['player_inventory']:
+        print('У вас нет толстого кота, подберите его.')
+        return game_state
+
+    print('Правильно!')
+    print(f'Вы получаете: {reward}!')
+    ROOMS[current_room]['puzzle'] = None
+    if reward == 'Освобождение':
+        return game_state
+    game_state['player_inventory'].append(reward)
+    
     return game_state
 
 
