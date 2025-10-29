@@ -1,5 +1,6 @@
 from labyrinth_game.constants import ROOMS
-from labyrinth_game.utils import describe_current_room, random_event, pseudo_random
+from labyrinth_game.utils import describe_current_room, random_event
+
 
 def show_inventory(game_state):
     """
@@ -10,7 +11,8 @@ def show_inventory(game_state):
     Returns: game_state['player_inventory']
     """
     if game_state['player_inventory']:
-        print(f'В вашем инвантаре: {", ".join(game_state['player_inventory'])}')
+        print(
+    f'В вашем инвентаре: {", ".join(game_state["player_inventory"])}')
     else:
         print('У вас пустой инвентарь.')
 
@@ -37,7 +39,8 @@ def move_player(game_state, direction):
 
     Args: состояние игры и направление следующего шага
 
-    Returns: комната в состоянии игры обновляется, шаг увеличивается на единицу и выводится описание новой комнаты 
+    Returns: комната в состоянии игры обновляется, шаг увеличивается на единицу
+    и выводится описание новой комнаты 
     """
     current_room_name = game_state['current_room']
     current_room_exits = ROOMS[current_room_name]['exits']
@@ -45,12 +48,14 @@ def move_player(game_state, direction):
     if direction in list(current_room_exits):
         new_room_name = current_room_exits[direction] 
         
-        if new_room_name == 'treasure_room' and 'rusty_key' not in game_state['player_inventory']:
+        if new_room_name == 'treasure_room' and \
+        'rusty_key' not in game_state['player_inventory']:
             print("Дверь заперта. Нужен ключ, чтобы пройти дальше.")
             return game_state
         
         if new_room_name == 'treasure_room':
-            print("Вы используете найденный ключ, чтобы открыть путь в комнату сокровищ.")
+            print(
+            "Вы используете найденный ключ, чтобы открыть путь в комнату сокровищ.")
         
         game_state['current_room'] = new_room_name
         game_state['steps_taken'] += 1  # сокращенная запись
@@ -59,7 +64,7 @@ def move_player(game_state, direction):
         random_event(game_state)
         
     else:
-        print(f'Такого направления нет, попробуй: {", ".join(current_room_exits)}')  # исправлены кавычки
+        print(f'Такого направления нет, попробуй: {", ".join(current_room_exits)}')
 
     return game_state
 
@@ -96,7 +101,8 @@ def use_item(game_state, item_name):
     if item_name in my_items:
         match item_name:
             case 'torch':
-                print('Вы достали факел. В комнате стало заметно светлее и не так страшно .')
+                print('Вы достали факел. В комнате стало заметно светлее' \
+                ' и не так страшно.')
             case 'sword':
                 print('Вы достали меч. Ваша уверенность в себе резко подскачила.')
             case 'bronze_box':

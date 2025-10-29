@@ -1,5 +1,7 @@
-from labyrinth_game.constants import ROOMS
 import math
+
+from labyrinth_game.constants import COMMANDS, ROOMS
+
 
 def describe_current_room(game_state):
     """
@@ -16,8 +18,8 @@ def describe_current_room(game_state):
     if ROOMS[the_room]['items'] == []:
         print('В комнате нет ничего полезного')
     else:
-        print(f'Заметные предметы: {', '.join(ROOMS[the_room]['items'])}')
-    print(f'Выходы: {', '.join(ROOMS[the_room]['exits'])}')
+        print(f'Заметные предметы: {", ".join(ROOMS[the_room]["items"])}')
+    print(f'Выходы: {", ".join(ROOMS[the_room]["exits"])}')
     if ROOMS[the_room]['puzzle']:
         print("Кажется, здесь есть загадка (используйте команду solve).")
     print('='*75)
@@ -57,7 +59,8 @@ def solve_puzzle(game_state):
             trigger_trap(game_state)
         return game_state
 
-    if right_answer == 'fat_ginger_cat' and 'fat_ginger_cat' not in game_state['player_inventory']:
+    if right_answer == 'fat_ginger_cat' and 'fat_ginger_cat' \
+    not in game_state['player_inventory']:
         print('У вас нет толстого кота, подберите его.')
         return game_state
 
@@ -105,7 +108,6 @@ def attempt_open_treasure(game_state):
 
     return game_state
 
-from labyrinth_game.constants import COMMANDS
 
 def show_help():
     """
@@ -146,7 +148,8 @@ def trigger_trap(game_state):
     player_inventory = game_state['player_inventory']
     seed = game_state['steps_taken']
     if player_inventory == []:
-        random_number = pseudo_random(seed, 10)
+        EVENT_PROBABILITY = 10
+        random_number = pseudo_random(seed, EVENT_PROBABILITY)
         if random_number < 3:
             print('Пол распался на части. Вы упали в бездну!')
             game_state['game_over'] = True
@@ -172,9 +175,11 @@ def random_event(game_state):
     Returns: событие
     """
     seed = game_state['steps_taken']
-    event_probability = pseudo_random(seed, 15)
+    EVENT_MODULO = 15
+    event_probability = pseudo_random(seed, EVENT_MODULO)
     if event_probability == 2:
-        event_type = pseudo_random(seed + 1, 3)
+        EVENT_MODULO_2 = 3
+        event_type = pseudo_random(seed + 1, EVENT_MODULO_2)
         if event_type == 0:
             print('Вы нашли монетку!')
             items_in_the_room = ROOMS[game_state['current_room']]['items']

@@ -1,8 +1,18 @@
 #!/usr/bin/env python3
 #Импорт словаря комнат
-from labyrinth_game.constants import ROOMS, COMMANDS
-from labyrinth_game.utils import describe_current_room, solve_puzzle, attempt_open_treasure, show_help
-from labyrinth_game.player_actions import get_input, show_inventory, move_player, take_item, use_item
+from labyrinth_game.player_actions import (
+    get_input,
+    move_player,
+    show_inventory,
+    take_item,
+    use_item,
+)
+from labyrinth_game.utils import (
+    attempt_open_treasure,
+    describe_current_room,
+    show_help,
+    solve_puzzle,
+)
 
 #Создаем словарь с состоянием игры
 game_state = {
@@ -71,7 +81,7 @@ def process_command(game_state, command):
 def main():
     print('Добро пожаловать в Лабиринт сокровищ!\n')
     describe_current_room(game_state)
-    while game_state['game_over'] == False:
+    while not game_state['game_over']:
         current_command = get_input()
         process_command(game_state, current_command)
 
