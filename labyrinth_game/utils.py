@@ -105,16 +105,15 @@ def attempt_open_treasure(game_state):
 
     return game_state
 
+from labyrinth_game.constants import COMMANDS
+
 def show_help():
+    """
+    Выводит список доступных команд с красивым форматированием
+    """
     print("\nДоступные команды:")
-    print("  go <direction>  - перейти в направлении (north/south/east/west)")
-    print("  look            - осмотреть текущую комнату")
-    print("  take <item>     - поднять предмет")
-    print("  use <item>      - использовать предмет из инвентаря")
-    print("  inventory       - показать инвентарь")
-    print("  solve           - попытаться решить загадку в комнате")
-    print("  quit            - выйти из игры")
-    print("  help            - показать это сообщение")
+    for command, description in COMMANDS.items():
+        print(f"    {command:<16} - {description}")
 
 
 def pseudo_random(seed, modulo):
