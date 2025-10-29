@@ -36,7 +36,7 @@ def solve_puzzle(game_state):
     question = puzzles_in_the_room[0]
     if puzzles_in_the_room:
         print(question)
-        answer = input('Ваш ответ:')
+        answer = input('Ваш ответ:').strip()
         if answer == right_answer:
             if right_answer == 'fat_ginger_cat':
                 if 'fat_ginger_cat' in game_state['player_inventory']:
@@ -69,7 +69,7 @@ def attempt_open_treasure(game_state):
     if 'treasure_key' in inventory:
         print("Вы применяете ключ, и замок щёлкает. Сундук открыт!")
         ROOMS[game_state['current_room']]['puzzle'] = None
-        print("В сундуке сокровище! Вы победили!")
+        print("В сундуке сокровище! Поздравляю, вы победили!")
         game_state['game_over'] = True
     else:
         print("Сундук заперт. Вы можете попробовать взломать его. Ввести код? (да/нет)")
@@ -133,7 +133,7 @@ def trigger_trap(game_state):
     if player_inventory == []:
         random_number = pseudo_random(seed, 10)
         if random_number < 3:
-            print('Пол распался на части. Вы провалилсь в бездну!')
+            print('Пол распался на части. Вы упали в бездну!')
             game_state['game_over'] = True
         else:
             print('Вы уцелели!')
@@ -157,8 +157,8 @@ def random_event(game_state):
     Returns: событие
     """
     seed = game_state['steps_taken']
-    event_probability = pseudo_random(seed, 10)
-    if event_probability == 0:
+    event_probability = pseudo_random(seed, 15)
+    if event_probability == 2:
         event_type = pseudo_random(seed + 1, 3)
         if event_type == 0:
             print('Вы нашли монетку!')
@@ -171,7 +171,7 @@ def random_event(game_state):
             else:
                 print('Вам нечем защищаться...')
                 print('Вас съел ящер, нужен был меч для защиты.')
-            game_state['game_over'] = True
+                game_state['game_over'] = True
         elif event_type == 2:
             if game_state['current_room'] == 'trap_room' and \
             'torch' not in game_state['player_inventory']:

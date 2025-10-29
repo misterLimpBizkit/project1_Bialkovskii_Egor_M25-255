@@ -1,5 +1,5 @@
 from labyrinth_game.constants import ROOMS
-from labyrinth_game.utils import describe_current_room 
+from labyrinth_game.utils import describe_current_room, random_event, pseudo_random
 
 def show_inventory(game_state):
     """
@@ -41,16 +41,28 @@ def move_player(game_state, direction):
     """
     current_room_name = game_state['current_room']
     current_room_exits = ROOMS[current_room_name]['exits']
+    
     if direction in list(current_room_exits):
         new_room_name = current_room_exits[direction] 
+        
+        if new_room_name == 'treasure_room' and 'rusty_key' not in game_state['player_inventory']:
+            print("Дверь заперта. Нужен ключ, чтобы пройти дальше.")
+            return game_state
+        
+        if new_room_name == 'treasure_room':
+            print("Вы используете найденный ключ, чтобы открыть путь в комнату сокровищ.")
+        
         game_state['current_room'] = new_room_name
-        game_state['steps_taken'] = game_state.get('steps_taken', 0) + 1 #можно += 1, т.к. steps_taken заранее инициирован
+        game_state['steps_taken'] += 1  # сокращенная запись
         print(f'Вы переместились {direction} в {new_room_name}!\n')
         describe_current_room(game_state)
+        random_event(game_state)
+        
     else:
-        print(f'Такого направления нет, попробуй: {', '.join(current_room_exits)}')
+        print(f'Такого направления нет, попробуй: {", ".join(current_room_exits)}')  # исправлены кавычки
 
     return game_state
+
 
 def take_item(game_state, item_name):
     """
@@ -84,23 +96,23 @@ def use_item(game_state, item_name):
     if item_name in my_items:
         match item_name:
             case 'torch':
-                print('Вы достали факел. В комнате стало заметно светлее.')
+                print('Вы достали факел. В комнате стало заметно светлее и не так страшно .')
             case 'sword':
                 print('Вы достали меч. Ваша уверенность в себе резко подскачила.')
             case 'bronze_box':
-                print('Вы открыли шкатулку. Внутри старый, ржавый ключ.')
+                print('Вы открыли эту  шкатулку. Внутри старый, ржавый ключ.')
                 game_state['player_inventory'].append('rusty_key')
-            case 'ginger car':
+            case 'ginger_car':
                 print('Мяу')
-            case 'black kitten':
+            case 'black_kitten':
                 print('МИУ миу')
-            case 'fat ginger cat':
+            case 'fat_ginger_cat':
                 print('МЯЯЯЯУ')
             case 'Священный алмаз':
-                print('Алмаз красиво сверкает, вам это нравится')
+                print('Алмаз красиво переливается, вам это очень нравится')
             case 'treasure_room_key':
-                print('Вам это еще пригодится')
+                print('Вам это может  еще пригодится')
             case _:
-                print('Непонятно как это использовать')
+                print('Вы не понимаете, как это использовать')
 
     return game_state
